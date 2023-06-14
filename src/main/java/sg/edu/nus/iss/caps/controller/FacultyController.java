@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import sg.edu.nus.iss.caps.model.Faculty;
+import sg.edu.nus.iss.caps.common.R;
 import sg.edu.nus.iss.caps.service.FacultyService;
 
 /**
@@ -25,25 +25,25 @@ public class FacultyController {
 
     @Operation(summary = "Get Faculty By Id")
     @GetMapping("/getFacultyById")
-    public Faculty getFacultyById(@Parameter(name = "facultyId", description = "Id of the faculty") Long facultyId) {
+    public R getFacultyById(Long facultyId) {
         return facultyService.getFacultyById(facultyId);
     }
 
     @Operation(summary = "Save a New Faculty")
     @PostMapping("/saveFaculty")
-    public void saveFaculty(String facultyName) {
-        facultyService.saveFaculty(facultyName);
+    public R saveFaculty(String facultyName) {
+        return facultyService.saveFaculty(facultyName);
     }
 
     @Operation(summary = "Update a Faculty by id")
     @PutMapping("/updateFaculty")
-    public void updateFaculty(Long facultyId, String newFacultyName) {
-        facultyService.updateFaculty(facultyId, newFacultyName);
+    public R updateFaculty(Long facultyId, String newFacultyName) {
+        return facultyService.updateFaculty(facultyId, newFacultyName);
     }
 
     @Operation(summary = "Delete a Faculty by id")
     @DeleteMapping("/deleteFacultyById")
-    public void deleteFacultyById(Long facultyId) {
-        facultyService.deleteFacultyById(facultyId);
+    public R deleteFacultyById(Long facultyId) {
+        return facultyService.deleteFacultyById(facultyId);
     }
 }

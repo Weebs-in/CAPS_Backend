@@ -2,6 +2,9 @@ package sg.edu.nus.iss.caps.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import sg.edu.nus.iss.caps.listener.FacultyListener;
+
+import java.time.LocalDateTime;
 
 /**
  * @Author: Cooper Liu
@@ -12,6 +15,7 @@ import lombok.Data;
 
 @Data
 @Entity
+@EntityListeners(FacultyListener.class)
 @Table(name = "faculty")
 public class Faculty {
     @Id
@@ -21,4 +25,10 @@ public class Faculty {
 
     @Column(name = "faculty_name")
     private String facultyName;
+
+    @Column(name = "gmt_create")
+    private LocalDateTime gmtCreate;
+
+    @Column(name = "gmt_modified")
+    private LocalDateTime gmtModified;
 }

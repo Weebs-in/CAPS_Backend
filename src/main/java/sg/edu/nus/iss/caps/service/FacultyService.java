@@ -32,9 +32,7 @@ public class FacultyService {
 
     public R getFacultyById(Long facultyId) {
         Faculty faculty = facultyRepository.findById(facultyId).orElse(null);
-        return (faculty != null)
-                ? R.ok(RMessage.RETRIEVE_SUCCESS).put("data", faculty)
-                : R.error(RMessage.RETRIEVE_FAILED);
+        return R.ok(RMessage.RETRIEVE_SUCCESS).put("data", faculty);
     }
 
     public R updateFaculty(Long facultyId, String facultyName) {

@@ -58,4 +58,11 @@ public class Student {
 
     @Column(name = "gmt_modified")
     private LocalDateTime gmtModified;
+
+    public Student() {
+    }
+
+    public Student(Long studentId) {
+        this.studentId = studentId;
+    }
 }

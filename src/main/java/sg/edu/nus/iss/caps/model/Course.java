@@ -54,4 +54,11 @@ public class Course {
 
     @Column(name = "gmt_modified")
     private LocalDateTime gmtModified;
+
+    public Course() {
+    }
+
+    public Course(Long courseId) {
+        this.courseId = courseId;
+    }
 }

@@ -23,6 +23,12 @@ public class FacultyController {
     @Autowired
     private FacultyService facultyService;
 
+    @Operation(summary = "Get all Faculties")
+    @GetMapping("/getAllFaculties")
+    public R getAllFaculties() {
+        return facultyService.getAllFaculties();
+    }
+
     @Operation(summary = "Get Faculty By Id")
     @GetMapping("/getFacultyById")
     public R getFacultyById(Long facultyId) {

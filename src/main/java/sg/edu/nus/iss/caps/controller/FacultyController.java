@@ -1,7 +1,6 @@
 package sg.edu.nus.iss.caps.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +21,12 @@ public class FacultyController {
 
     @Autowired
     private FacultyService facultyService;
+
+    @Operation(summary = "Get all Faculties")
+    @GetMapping("/getAllFaculties")
+    public R getAllFaculties() {
+        return facultyService.getAllFaculties();
+    }
 
     @Operation(summary = "Get Faculty By Id")
     @GetMapping("/getFacultyById")

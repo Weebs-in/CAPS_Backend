@@ -7,6 +7,8 @@ import sg.edu.nus.iss.caps.common.RMessage;
 import sg.edu.nus.iss.caps.model.Faculty;
 import sg.edu.nus.iss.caps.repository.FacultyRepository;
 
+import java.util.List;
+
 /**
  * @Author: Cooper Liu
  * @Description:
@@ -30,11 +32,14 @@ public class FacultyService {
         return R.ok(RMessage.CREATE_SUCCESS);
     }
 
+    public R getAllFaculties() {
+        List<Faculty> faculty = facultyRepository.findAll();
+        return R.ok(RMessage.RETRIEVE_SUCCESS).put("data", faculty);
+    }
+
     public R getFacultyById(Long facultyId) {
         Faculty faculty = facultyRepository.findById(facultyId).orElse(null);
-        return (faculty != null)
-                ? R.ok(RMessage.RETRIEVE_SUCCESS).put("data", faculty)
-                : R.error(RMessage.RETRIEVE_FAILED);
+        return R.ok(RMessage.RETRIEVE_SUCCESS).put("data", faculty);
     }
 
     public R updateFaculty(Long facultyId, String facultyName) {

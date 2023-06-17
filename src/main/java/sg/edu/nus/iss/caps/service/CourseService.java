@@ -67,4 +67,26 @@ public class CourseService {
         courseRepository.deleteById(courseId);
         return R.ok(RMessage.DELETE_SUCCESS);
     }
+
+    public R courseVacancyById(Long courseId){
+
+        //Get course by ID
+        R courseVacancy = getCourseById(courseId);
+        //Check if the course exist
+
+        if(courseVacancy.get("data") == null){
+            //Create a new course if it doesnt exist
+            Course newCourse = new Course();
+            newCourse.setCourseVacancy(1);
+            courseVacancy.put("data", newCourse);
+        } else {
+            //Increment the course vacancy by 1
+            Course existingCourse = (Course) courseVacancy.get("data");
+            int currVacancy = existingCourse.getCourseVacancy();
+            existingCourse.setCourseVacancy(currVacancy + 1);
+        }
+        // Save the course
+        courseVacancy = saveCourse((Course) courseVacancy.get("data"));
+        return courseVacancy;
+    }
 }

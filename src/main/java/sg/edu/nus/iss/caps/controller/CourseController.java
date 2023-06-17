@@ -58,4 +58,10 @@ public class CourseController {
     public R deleteCourseById(Long courseId) {
         return courseService.deleteCourseById(courseId);
     }
+
+    @Operation(summary = "Get course vacancy by id")
+    @GetMapping("/getCourseVacancyById")
+    public R getCourseVacancyById(Long courseId) {
+        return courseService.courseVacancyById(courseId);
+    }
 }

@@ -41,4 +41,10 @@ public class CourseStudentController {
     public R getAvailableCoursesForStudent(Long studentId){
         return courseStudentService.getAvailableCoursesForStudent(studentId);
     }
+
+    @Operation(summary = "View student's course grade and GPA")
+    @PostMapping("/viewStudentCourseGradeAndGPA")
+    public R viewStudentCoursesAndGrades(Long studentId){
+        return courseStudentService.viewStudentCoursesAndGrades(studentId);
+    }
 }

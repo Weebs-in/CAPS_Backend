@@ -11,9 +11,7 @@ import sg.edu.nus.iss.caps.repository.CourseRepository;
 import sg.edu.nus.iss.caps.repository.CourseStudentRepository;
 import sg.edu.nus.iss.caps.repository.StudentRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static sg.edu.nus.iss.caps.common.CourseCode.*;
@@ -134,5 +132,52 @@ public class CourseStudentService {
                 .filter(course -> !completedCourseIds.contains(course.getCourseId()))
                 .collect(Collectors.toSet());
         return R.ok(new ArrayList<>(availableCourses));
+    }
+
+    public R viewStudentCoursesAndGrades(Long studentId) {
+        // check student
+        Student student = studentRepository.findById(studentId).orElse(null);
+        if (student == null) {
+            return R.error(RMessage.CREATE_FAILED + ": Student not found");
+        }
+        // Get all course records for the student
+        List<CourseStudent> courseRecords = courseStudentRepository.getCourseBySidAndStatus(studentId, CSC_STUDENT_ENROLLED);
+
+        // Create a list to store the course information with grades
+        List<Map<String, Object>> courseInfoList = new ArrayList<>();
+
+        // Calculate the total grade points and credits for GPA calculation
+        double totalGradePoints = 0.0;
+        int totalCredits = 0;
+
+        // Iterate over the course records
+        for(CourseStudent courseStudent : courseRecords){
+            Course course = courseStudent.getCourse();
+            double grade = courseStudent.getCourseStudentGrade();
+
+            // Create a map to store the course information with grade
+            Map<String, Object> courseInfo = new HashMap<>();
+            courseInfo.put("courseCode", course.getCourseCode());
+            courseInfo.put("courseName", course.getCourseName());
+            courseInfo.put("grade", grade);
+
+            // Calculate the grade points and credits
+            if(grade >= 0){
+                double gradePoints = grade * course.getCourseCredits();
+                totalGradePoints += gradePoints;
+                totalCredits += course.getCourseCredits();
+            }
+            // Add the course information to the list
+            courseInfoList.add(courseInfo);
+        }
+        // Calculate the GPA
+        double gpa = totalCredits > 0 ? totalGradePoints / totalCredits : 0.0;
+
+        // Create a map to store the result
+        Map<String, Object> result = new HashMap<>();
+        result.put("courses", courseInfoList);
+        result.put("gpa", gpa);
+
+        return R.ok(result);
     }
 }

@@ -47,4 +47,10 @@ public class CourseStudentController {
     public R viewStudentCoursesAndGrades(Long studentId){
         return courseStudentService.viewStudentCoursesAndGrades(studentId);
     }
+
+    @Operation(summary = "Update student's enrollment status in a course")
+    @PostMapping("/updateStudentEnrollmentStatus")
+    public R updateStudentEnrollmentStatus(Long studentId, Long courseId, int enrollmentStatus){
+        return courseStudentService.updateStudentEnrollmentStatus(studentId, courseId, enrollmentStatus);
+    }
 }

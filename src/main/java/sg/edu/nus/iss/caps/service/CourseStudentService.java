@@ -119,7 +119,7 @@ public class CourseStudentService {
         // check student
         Student student = studentRepository.findById(studentId).orElse(null);
         if (student == null) {
-            return R.error(RMessage.CREATE_FAILED + ": Student not found");
+            return R.error(RMessage.RETRIEVE_FAILED + ": Student not found");
         }
         //Get all courses
         List<Course> allCourses = courseRepository.findAll();
@@ -138,7 +138,7 @@ public class CourseStudentService {
         // check student
         Student student = studentRepository.findById(studentId).orElse(null);
         if (student == null) {
-            return R.error(RMessage.CREATE_FAILED + ": Student not found");
+            return R.error(RMessage.RETRIEVE_FAILED + ": Student not found");
         }
         // Get all course records for the student
         List<CourseStudent> courseRecords = courseStudentRepository.getCourseBySidAndStatus(studentId, CSC_STUDENT_ENROLLED);
@@ -179,5 +179,32 @@ public class CourseStudentService {
         result.put("gpa", gpa);
 
         return R.ok(result);
+    }
+
+    public R updateStudentEnrollmentStatus(Long studentId, Long courseId, int enrollmentStatus){
+        // check student
+        Student student = studentRepository.findById(studentId).orElse(null);
+        if (student == null) {
+            return R.error(RMessage.UPDATE_FAILED + ": Student not found");
+        }
+        // check course
+        Course course = courseRepository.findById(courseId).orElse(null);
+        if (course == null) {
+            return R.error(RMessage.UPDATE_FAILED + ": Course not found");
+        }
+
+        // Check if student is enrolled in the course
+        CourseStudent courseStudent = courseStudentRepository.getCourseByCidAndSid(courseId, studentId).stream()
+                .findFirst()
+                .orElse(null);
+        if(courseStudent == null){
+            return R.error(RMessage.UPDATE_FAILED + ": Student is not enrolled in the course");
+        }
+
+        // Update enrollment status
+        courseStudent.setCourseStudentStatus(enrollmentStatus);
+        courseStudentRepository.save(courseStudent);
+
+        return R.ok(RMessage.UPDATE_SUCCESS + ": Enrollment status updated successfully");
     }
 }

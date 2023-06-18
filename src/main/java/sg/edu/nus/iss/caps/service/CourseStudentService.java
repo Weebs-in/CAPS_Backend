@@ -11,7 +11,10 @@ import sg.edu.nus.iss.caps.repository.CourseRepository;
 import sg.edu.nus.iss.caps.repository.CourseStudentRepository;
 import sg.edu.nus.iss.caps.repository.StudentRepository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static sg.edu.nus.iss.caps.common.CourseCode.*;
 
@@ -112,5 +115,24 @@ public class CourseStudentService {
         course.setCourseVacancy(course.getCourseVacancy() + 1);
         courseRepository.save(course);
         return R.ok(RMessage.CREATE_SUCCESS + ": Remove successful");
+    }
+
+    public R getAvailableCoursesForStudent(Long studentId) {
+        // check student
+        Student student = studentRepository.findById(studentId).orElse(null);
+        if (student == null) {
+            return R.error(RMessage.CREATE_FAILED + ": Student not found");
+        }
+        //Get all courses
+        List<Course> allCourses = courseRepository.findAll();
+        //Filter out completed courses
+        List<CourseStudent> completedCourses = courseStudentRepository.getCourseBySidAndStatus(studentId, CSC_STUDENT_COMPLETED);
+        Set<Long> completedCourseIds = completedCourses.stream()
+                .map(courseStudent -> courseStudent.getCourse().getCourseId())
+                .collect(Collectors.toSet());
+        Set<Course> availableCourses = allCourses.stream()
+                .filter(course -> !completedCourseIds.contains(course.getCourseId()))
+                .collect(Collectors.toSet());
+        return R.ok(new ArrayList<>(availableCourses));
     }
 }

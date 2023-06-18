@@ -35,4 +35,10 @@ public class CourseStudentController {
     public R removeStudentFromCourse(Long studentId, Long courseId) {
         return courseStudentService.removeStudentFromCourse(studentId, courseId);
     }
+
+    @Operation(summary = "View list of courses that student can enroll in")
+    @PostMapping("/viewStudentCourseListEnrolment")
+    public R getAvailableCoursesForStudent(Long studentId){
+        return courseStudentService.getAvailableCoursesForStudent(studentId);
+    }
 }

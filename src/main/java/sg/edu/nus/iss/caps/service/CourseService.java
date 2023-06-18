@@ -73,9 +73,8 @@ public class CourseService {
         //Get course by ID
         R courseVacancy = getCourseById(courseId);
         //Check if the course exist
-
         if(courseVacancy.get("data") == null){
-            //Create a new course if it doesnt exist
+            //Create a new course if it doesn't exist
             Course newCourse = new Course();
             newCourse.setCourseVacancy(1);
             courseVacancy.put("data", newCourse);
@@ -88,5 +87,25 @@ public class CourseService {
         // Save the course
         courseVacancy = saveCourse((Course) courseVacancy.get("data"));
         return courseVacancy;
+    }
+
+    public R courseCapacityById(Long courseId){
+        //Get course by id
+        R courseCapacity = getCourseById(courseId);
+        //Check if the course exist
+        if (courseCapacity.get("data") == null) {
+            //Create a new course capacity if it doesn't exist
+            Course newCourseCapacity = new Course();
+            newCourseCapacity.setCourseCapacity(1);
+            courseCapacity.put("data", newCourseCapacity);
+        }else {
+            //Increment the course capacity by 1
+            Course existingCourseCapacity = (Course) courseCapacity.get("data");
+            int currCapacity = existingCourseCapacity.getCourseCapacity();
+            existingCourseCapacity.setCourseCapacity(currCapacity + 1);
+        }
+        //save course
+        courseCapacity = saveCourse((Course) courseCapacity.get("data"));
+        return courseCapacity;
     }
 }

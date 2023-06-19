@@ -16,4 +16,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query("SELECT s FROM Student s WHERE s.faculty.facultyId = :facultyId")
     List<Student> getStudentsByFacultyId(Long facultyId);
+
+    @Query("SELECT s FROM Student s WHERE s.matriculationNumber = :matriculationNumber")
+    Student getStudentByMatriculationNumber(String matriculationNumber);
 }

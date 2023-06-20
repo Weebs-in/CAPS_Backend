@@ -2,6 +2,7 @@ package sg.edu.nus.iss.caps.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import sg.edu.nus.iss.caps.listener.LecturerListener;
 import sg.edu.nus.iss.caps.listener.StudentListener;
 
 import java.time.LocalDate;
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@EntityListeners(StudentListener.class)
+@EntityListeners(LecturerListener.class)
 @Table(name = "lecturer")
 public class Lecturer {
 
@@ -49,7 +50,7 @@ public class Lecturer {
     public Lecturer() {
     }
 
-    public Lecturer(Long studentId) {
-        this.lecturerId = studentId;
+    public Lecturer(Long lecturerId) {
+        this.lecturerId = getLecturerId();
     }
 }

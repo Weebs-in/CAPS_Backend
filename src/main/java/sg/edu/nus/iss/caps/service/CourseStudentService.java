@@ -6,6 +6,7 @@ import sg.edu.nus.iss.caps.common.R;
 import sg.edu.nus.iss.caps.common.RMessage;
 import sg.edu.nus.iss.caps.model.Course;
 import sg.edu.nus.iss.caps.model.CourseStudent;
+import sg.edu.nus.iss.caps.model.Faculty;
 import sg.edu.nus.iss.caps.model.Student;
 import sg.edu.nus.iss.caps.repository.CourseRepository;
 import sg.edu.nus.iss.caps.repository.CourseStudentRepository;
@@ -121,15 +122,23 @@ public class CourseStudentService {
         if (student == null) {
             return R.error(RMessage.RETRIEVE_FAILED + ": Student not found");
         }
+        //Get the faculty of the student
+        Faculty faculty = student.getFaculty();
+
         //Get all courses
         List<Course> allCourses = courseRepository.findAll();
+
         //Filter out completed courses
         List<CourseStudent> completedCourses = courseStudentRepository.getCourseBySidAndStatus(studentId, CSC_STUDENT_COMPLETED);
         Set<Long> completedCourseIds = completedCourses.stream()
                 .map(courseStudent -> courseStudent.getCourse().getCourseId())
                 .collect(Collectors.toSet());
+
+        //Filter out courses with a different faculty or a vacancy of 0
         Set<Course> availableCourses = allCourses.stream()
-                .filter(course -> !completedCourseIds.contains(course.getCourseId()))
+                .filter(course -> !completedCourseIds.contains(course.getCourseId())) //Exclude completed courses
+                .filter(course -> course.getFaculty().equals(faculty)) //Filter by faculty
+                .filter(course -> course.getCourseVacancy() > 0) // Filter by vacancy
                 .collect(Collectors.toSet());
         return R.ok(new ArrayList<>(availableCourses));
     }

@@ -68,25 +68,13 @@ public class CourseService {
         return R.ok(RMessage.DELETE_SUCCESS);
     }
 
-    public R courseVacancyById(Long courseId){
+    public int getCourseVacancyById(Long courseId) {
 
-        //Get course by ID
-        R courseVacancy = getCourseById(courseId);
-        //Check if the course exist
-        if(courseVacancy.get("data") == null){
-            //Create a new course if it doesn't exist
-            Course newCourse = new Course();
-            newCourse.setCourseVacancy(1);
-            courseVacancy.put("data", newCourse);
-        } else {
-            //Increment the course vacancy by 1
-            Course existingCourse = (Course) courseVacancy.get("data");
-            int currVacancy = existingCourse.getCourseVacancy();
-            existingCourse.setCourseVacancy(currVacancy + 1);
+        Course course = courseRepository.findById(courseId).orElse(null);
+        if (course != null) {
+            return course.getCourseVacancy();
         }
-        // Save the course
-        courseVacancy = saveCourse((Course) courseVacancy.get("data"));
-        return courseVacancy;
+        return 0;
     }
 
     public R courseCapacityById(Long courseId){

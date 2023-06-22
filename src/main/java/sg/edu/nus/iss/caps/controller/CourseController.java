@@ -61,8 +61,8 @@ public class CourseController {
 
     @Operation(summary = "Get course vacancy by id")
     @GetMapping("/getCourseVacancyById")
-    public R getCourseVacancyById(Long courseId) {
-        return courseService.courseVacancyById(courseId);
+    public int getCourseVacancyById(Long courseId) {
+        return courseService.getCourseVacancyById(courseId);
     }
 
     @Operation(summary = "Get course capacity by id")

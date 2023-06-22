@@ -12,7 +12,8 @@ import sg.edu.nus.iss.caps.repository.CourseStudentRepository;
 import sg.edu.nus.iss.caps.repository.StudentRepository;
 
 import java.util.List;
-
+import java.util.Optional;
+import java.util.ArrayList;
 import static sg.edu.nus.iss.caps.common.CourseCode.*;
 
 /**
@@ -23,11 +24,11 @@ import static sg.edu.nus.iss.caps.common.CourseCode.*;
  */
 
 @Service
-public class CourseStudentService {
+    public class CourseStudentService {
 
-    private final CourseStudentRepository courseStudentRepository;
-    private final CourseRepository courseRepository;
-    private final StudentRepository studentRepository;
+        private final CourseStudentRepository courseStudentRepository;
+        private final CourseRepository courseRepository;
+        private final StudentRepository studentRepository;
 
     @Autowired
     public CourseStudentService(CourseStudentRepository courseStudentRepository,
@@ -113,4 +114,5 @@ public class CourseStudentService {
         courseRepository.save(course);
         return R.ok(RMessage.CREATE_SUCCESS + ": Remove successful");
     }
+
 }

@@ -35,4 +35,6 @@ public class CourseStudentController {
     public R removeStudentFromCourse(Long studentId, Long courseId) {
         return courseStudentService.removeStudentFromCourse(studentId, courseId);
     }
+
+
 }

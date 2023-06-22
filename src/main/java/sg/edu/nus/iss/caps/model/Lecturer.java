@@ -51,6 +51,6 @@ public class Lecturer {
     }
 
     public Lecturer(Long lecturerId) {
-        this.lecturerId = getLecturerId();
+        this.lecturerId = lecturerId;
     }
 }

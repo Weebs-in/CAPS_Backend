@@ -4,13 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sg.edu.nus.iss.caps.common.R;
 import sg.edu.nus.iss.caps.common.RMessage;
-import sg.edu.nus.iss.caps.model.Course;
-import sg.edu.nus.iss.caps.model.CourseStudent;
-import sg.edu.nus.iss.caps.model.Student;
-import sg.edu.nus.iss.caps.repository.CourseRepository;
-import sg.edu.nus.iss.caps.repository.CourseStudentRepository;
-import sg.edu.nus.iss.caps.repository.StudentRepository;
+import sg.edu.nus.iss.caps.model.*;
+import sg.edu.nus.iss.caps.repository.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static sg.edu.nus.iss.caps.common.CourseCode.*;
@@ -28,17 +25,24 @@ public class CourseStudentService {
     private final CourseStudentRepository courseStudentRepository;
     private final CourseRepository courseRepository;
     private final StudentRepository studentRepository;
+    private final CourseLecturerRepository courseLecturerRepository;
+    private final LecturerRepository lecturerRepository;
 
     @Autowired
     public CourseStudentService(CourseStudentRepository courseStudentRepository,
                                 CourseRepository courseRepository,
-                                StudentRepository studentRepository) {
+                                StudentRepository studentRepository, CourseLecturer courseLecturer, CourseLecturerRepository courseLecturerRepository, LecturerRepository lecturerRepository) {
         this.courseStudentRepository = courseStudentRepository;
         this.courseRepository = courseRepository;
         this.studentRepository = studentRepository;
+        this.courseLecturerRepository = courseLecturerRepository;
+        this.lecturerRepository = lecturerRepository;
+
+
     }
 
     /**
+     *
      * Student enroll for a course.
      * Successful when:
      * [course enrolling] + [course of same faculty] + [course not full] + [student not banned].
@@ -112,5 +116,50 @@ public class CourseStudentService {
         course.setCourseVacancy(course.getCourseVacancy() + 1);
         courseRepository.save(course);
         return R.ok(RMessage.CREATE_SUCCESS + ": Remove successful");
+    }
+
+    /**
+     * Author anabell
+     * View list of enrolled students for a course
+     * first find course is exit or not;
+     *second find  coursestudent from courseId
+     * when coursestudent list is null and then return "no enrollment student"
+     * create studentlist for return R data
+     * and then extract student related from coursestudentslist and then  this list added to studentlist for return
+     *
+     */
+
+
+    public R  viewEnrollmentStudent(Long courseId, Long lecturerId){
+        //check lecturer
+        Lecturer lecturer=lecturerRepository.findById(lecturerId).orElse(null);
+        if(lecturer==null){
+            return R.error(RMessage.RETRIEVE_FAILED+":lecturer is not found");
+        }
+        //check this course is taughted by lecturer;
+        List<CourseLecturer> courseLecturers=courseLecturerRepository.getCourseLecturersByLecturerId(lecturerId);
+        boolean isCourseTaughtByLecturer = courseLecturers.stream()
+                .anyMatch(cl -> cl.getCourse().getCourseId().equals(courseId));
+
+        if (!isCourseTaughtByLecturer) {
+            return R.error(RMessage.RETRIEVE_FAILED + ": Course is not taught by the lecturer");
+        }
+        // check course
+        Course course = courseRepository.findById(courseId).orElse(null);
+        if (course == null) {
+            return R.error(RMessage.RETRIEVE_FAILED + ": Course not found");
+        }
+
+        List<CourseStudent> courseStudents=courseStudentRepository.getCourseStudentsByCourseId(courseId);
+        if(courseStudents==null){
+            return R.ok("there is no enrollment student for this course");
+        }
+        List<Student> studentList=new ArrayList<>();
+        for(CourseStudent courseStudent:courseStudents){
+            Student student=courseStudent.getStudent();
+            studentList.add(student);
+        }
+         return R.ok(RMessage.RETRIEVE_SUCCESS).put("data",studentList);
+
     }
 }

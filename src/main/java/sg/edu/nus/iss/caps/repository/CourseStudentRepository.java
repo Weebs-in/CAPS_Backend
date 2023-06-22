@@ -16,4 +16,8 @@ public interface CourseStudentRepository extends JpaRepository<CourseStudent, Lo
 
     @Query("SELECT cs FROM CourseStudent cs WHERE cs.course.courseId = :courseId AND cs.student.studentId = :studentId")
     List<CourseStudent> getCourseByCidAndSid(Long courseId, Long studentId);
+     @Query("SELECT cs FROM  CourseStudent cs WHERE cs.course.courseId=:courseId")
+    List<CourseStudent> getCourseStudentsByCourseId(Long courseId);
+
+
 }

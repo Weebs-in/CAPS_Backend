@@ -18,7 +18,7 @@ public class R extends HashMap<String, Object> {
     }
 
     public boolean isOk() {
-        int code = (Integer) get("code");
+        int code = (Integer)get("code");
         return code == RCode.CODE_SUCCESS;
     }
 

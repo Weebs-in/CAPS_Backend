@@ -22,8 +22,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Query("SELECT c.courseVacancy FROM Course c WHERE c.courseId = :courseId")
     int getCourseVacancyById(@Param("courseId")Long courseId);
 
-    @Query("SELECT c FROM Course c WHERE c.courseId = :courseId AND c.courseCapacity > 0")
-    List<Course> courseCapacityById(Long courseId);
-
+    @Query("SELECT c.courseCapacity FROM Course c WHERE c.courseId = :courseId")
+    int getCourseCapacityById(@Param("courseId")Long courseId);
 
 }

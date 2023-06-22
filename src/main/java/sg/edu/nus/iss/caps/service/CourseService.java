@@ -77,23 +77,12 @@ public class CourseService {
         return 0;
     }
 
-    public R courseCapacityById(Long courseId){
-        //Get course by id
-        R courseCapacity = getCourseById(courseId);
-        //Check if the course exist
-        if (courseCapacity.get("data") == null) {
-            //Create a new course capacity if it doesn't exist
-            Course newCourseCapacity = new Course();
-            newCourseCapacity.setCourseCapacity(1);
-            courseCapacity.put("data", newCourseCapacity);
-        }else {
-            //Increment the course capacity by 1
-            Course existingCourseCapacity = (Course) courseCapacity.get("data");
-            int currCapacity = existingCourseCapacity.getCourseCapacity();
-            existingCourseCapacity.setCourseCapacity(currCapacity + 1);
+    public int getCourseCapacityById(Long courseId){
+
+        Course course = courseRepository.findById(courseId).orElse(null);
+        if(course != null){
+            return course.getCourseCapacity();
         }
-        //save course
-        courseCapacity = saveCourse((Course) courseCapacity.get("data"));
-        return courseCapacity;
+        return 0;
     }
 }

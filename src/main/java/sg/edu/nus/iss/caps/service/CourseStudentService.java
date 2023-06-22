@@ -141,7 +141,7 @@ public class CourseStudentService {
             return R.error(RMessage.RETRIEVE_FAILED + ": Student not found");
         }
         // Get all course records for the student
-        List<CourseStudent> courseRecords = courseStudentRepository.getCourseBySidAndStatus(studentId, CSC_STUDENT_ENROLLED);
+        List<CourseStudent> courseRecords = courseStudentRepository.getCourseBySidAndECStatus(studentId, CSC_STUDENT_ENROLLED, CSC_STUDENT_COMPLETED);
 
         // Create a list to store the course information with grades
         List<Map<String, Object>> courseInfoList = new ArrayList<>();

@@ -3,7 +3,6 @@ package sg.edu.nus.iss.caps.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import sg.edu.nus.iss.caps.listener.LecturerListener;
-import sg.edu.nus.iss.caps.listener.StudentListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

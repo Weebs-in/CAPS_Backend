@@ -42,4 +42,22 @@ public class CourseStudentController {
     public R getEnrollStudentForTheCourse(Long courseId, Long lecturerId) {
         return courseStudentService.viewEnrollmentStudent(courseId, lecturerId);
     }
+
+    @Operation(summary = "View list of courses that student can enroll in")
+    @PostMapping("/viewStudentCourseListEnrolment")
+    public R getAvailableCoursesForStudent(Long studentId){
+        return courseStudentService.getAvailableCoursesForStudent(studentId);
+    }
+
+    @Operation(summary = "View student's course grade and GPA")
+    @PostMapping("/viewStudentCourseGradeAndGPA")
+    public R viewStudentCoursesAndGrades(Long studentId){
+        return courseStudentService.viewStudentCoursesAndGrades(studentId);
+    }
+
+    @Operation(summary = "Update student's enrollment status in a course")
+    @PostMapping("/updateStudentEnrollmentStatus")
+    public R updateStudentEnrollmentStatus(Long studentId, Long courseId, int enrollmentStatus){
+        return courseStudentService.updateStudentEnrollmentStatus(studentId, courseId, enrollmentStatus);
+    }
 }

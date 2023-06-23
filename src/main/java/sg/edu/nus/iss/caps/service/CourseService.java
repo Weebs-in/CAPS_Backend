@@ -67,4 +67,22 @@ public class CourseService {
         courseRepository.deleteById(courseId);
         return R.ok(RMessage.DELETE_SUCCESS);
     }
+
+    public int getCourseVacancyById(Long courseId) {
+
+        Course course = courseRepository.findById(courseId).orElse(null);
+        if (course != null) {
+            return course.getCourseVacancy();
+        }
+        return 0;
+    }
+
+    public int getCourseCapacityById(Long courseId){
+
+        Course course = courseRepository.findById(courseId).orElse(null);
+        if(course != null){
+            return course.getCourseCapacity();
+        }
+        return 0;
+    }
 }

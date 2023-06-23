@@ -7,8 +7,8 @@ import sg.edu.nus.iss.caps.common.RMessage;
 import sg.edu.nus.iss.caps.model.*;
 import sg.edu.nus.iss.caps.repository.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static sg.edu.nus.iss.caps.common.CourseCode.*;
 
@@ -157,5 +157,106 @@ public class CourseStudentService {
         }
         return R.ok(RMessage.RETRIEVE_SUCCESS).put("data", studentList);
 
+    }
+
+    public R getAvailableCoursesForStudent(Long studentId) {
+        // check student
+        Student student = studentRepository.findById(studentId).orElse(null);
+        if (student == null) {
+            return R.error(RMessage.RETRIEVE_FAILED + ": Student not found");
+        }
+        //Get the faculty of the student
+        Faculty faculty = student.getFaculty();
+
+        //Get all courses
+        List<Course> allCourses = courseRepository.findAll();
+
+        //Filter out completed courses
+        List<CourseStudent> completedCourses = courseStudentRepository.getCourseBySidAndStatus(studentId, CSC_STUDENT_COMPLETED);
+        Set<Long> completedCourseIds = completedCourses.stream()
+                .map(courseStudent -> courseStudent.getCourse().getCourseId())
+                .collect(Collectors.toSet());
+
+        //Filter out courses with a different faculty or a vacancy of 0
+        Set<Course> availableCourses = allCourses.stream()
+                .filter(course -> !completedCourseIds.contains(course.getCourseId())) //Exclude completed courses
+                .filter(course -> course.getFaculty().equals(faculty)) //Filter by faculty
+                .filter(course -> course.getCourseVacancy() > 0) // Filter by vacancy
+                .collect(Collectors.toSet());
+        return R.ok(new ArrayList<>(availableCourses));
+    }
+
+    public R viewStudentCoursesAndGrades(Long studentId) {
+        // check student
+        Student student = studentRepository.findById(studentId).orElse(null);
+        if (student == null) {
+            return R.error(RMessage.RETRIEVE_FAILED + ": Student not found");
+        }
+        // Get all course records for the student
+        List<CourseStudent> courseRecords = courseStudentRepository.getCourseBySidAndECStatus(studentId, CSC_STUDENT_ENROLLED, CSC_STUDENT_COMPLETED);
+
+        // Create a list to store the course information with grades
+        List<Map<String, Object>> courseInfoList = new ArrayList<>();
+
+        // Calculate the total grade points and credits for GPA calculation
+        double totalGradePoints = 0.0;
+        int totalCredits = 0;
+
+        // Iterate over the course records
+        for(CourseStudent courseStudent : courseRecords){
+            Course course = courseStudent.getCourse();
+            double grade = courseStudent.getCourseStudentGrade();
+
+            // Create a map to store the course information with grade
+            Map<String, Object> courseInfo = new HashMap<>();
+            courseInfo.put("courseCode", course.getCourseCode());
+            courseInfo.put("courseName", course.getCourseName());
+            courseInfo.put("grade", grade);
+
+            // Calculate the grade points and credits
+            if(grade >= 0){
+                double gradePoints = grade * course.getCourseCredits();
+                totalGradePoints += gradePoints;
+                totalCredits += course.getCourseCredits();
+            }
+            // Add the course information to the list
+            courseInfoList.add(courseInfo);
+        }
+        // Calculate the GPA
+        double gpa = totalCredits > 0 ? totalGradePoints / totalCredits : 0.0;
+
+        // Create a map to store the result
+        Map<String, Object> result = new HashMap<>();
+        result.put("courses", courseInfoList);
+        result.put("gpa", gpa);
+
+        return R.ok(result);
+    }
+
+    public R updateStudentEnrollmentStatus(Long studentId, Long courseId, int enrollmentStatus){
+        // check student
+        Student student = studentRepository.findById(studentId).orElse(null);
+        if (student == null) {
+            return R.error(RMessage.UPDATE_FAILED + ": Student not found");
+        }
+        // check course
+        Course course = courseRepository.findById(courseId).orElse(null);
+        if (course == null) {
+            return R.error(RMessage.UPDATE_FAILED + ": Course not found");
+        }
+
+        // Check if student is enrolled in the course
+        CourseStudent courseStudent = courseStudentRepository.getCourseByCidAndSid(courseId, studentId).stream()
+                .findFirst()
+                .orElse(null);
+        if(courseStudent == null){
+            return R.error(RMessage.UPDATE_FAILED + ": Student is not enrolled in the course");
+        }
+
+        // Update enrollment status
+        courseStudent.setCourseStudentStatus(enrollmentStatus);
+        courseStudentRepository.save(courseStudent);
+
+        return R.ok(RMessage.UPDATE_SUCCESS + ": Enrollment status updated successfully");
     }
 }

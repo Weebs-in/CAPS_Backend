@@ -11,6 +11,7 @@ public abstract class CourseCode {
     public static final int CSC_STUDENT_ENROLLED = 0;
     public static final int CSC_COURSE_ENROLLING = 0;
     public static final int CSC_COURSE_NOT_ENROLLING = 1;
+    public static final int CSC_STUDENT_COMPLETED = 2;
 
     public static final int CSC_LECTURER_ENROLLED = 0;
     public static final int CSC_LECTURER_NOT_ENROLLING = 1;

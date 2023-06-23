@@ -79,7 +79,7 @@ public class LecturerService {
 
         if (courseStudentList != null) {
             for (CourseLecturer course : courseStudentList) {
-                List<CourseStudent> courseStudents = courseStudentRepository.getStudentByCid(course.getCourse().getCourseId());
+                List<CourseStudent> courseStudents = courseStudentRepository.getCourseStudentsByCourseId(course.getCourse().getCourseId());
 
                 allStudentList.addAll(courseStudents);
 

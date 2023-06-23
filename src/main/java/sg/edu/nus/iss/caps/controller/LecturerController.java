@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import sg.edu.nus.iss.caps.common.R;
 import sg.edu.nus.iss.caps.model.Lecturer;
 import sg.edu.nus.iss.caps.service.LecturerService;
+
 @Tag(name = "Lecturer API")
 @RestController
 @RequestMapping("/lecturer")
@@ -51,4 +52,3 @@ public class LecturerController {
         return lecturerService.deleteLecturerById(lecturerId);
     }
 }
-

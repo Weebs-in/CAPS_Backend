@@ -10,4 +10,7 @@ public interface CourseLecturerRepository extends JpaRepository<CourseLecturer, 
 
     @Query("SELECT cl FROM CourseLecturer cl WHERE cl.course.courseId = :courseId AND cl.lecturer.lecturerId = :lecturerId")
     List<CourseLecturer> getCourseByCidAndLid(Long courseId, Long lecturerId);
+
+    @Query("SELECT cl from CourseLecturer cl where cl.lecturer.lecturerId=:lecturerId")
+    List<CourseLecturer> getCourseLecturersByLecturerId(Long lecturerId);
 }

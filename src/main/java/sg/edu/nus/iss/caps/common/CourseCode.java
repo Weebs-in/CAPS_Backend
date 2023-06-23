@@ -14,4 +14,6 @@ public abstract class CourseCode {
 
     public static final int CSC_LECTURER_ENROLLED = 0;
     public static final int CSC_LECTURER_NOT_ENROLLING = 1;
+
+    public static final String CSC_COURSE_SCHEDULE = "";
 }

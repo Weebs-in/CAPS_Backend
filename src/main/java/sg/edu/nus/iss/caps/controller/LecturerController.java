@@ -51,4 +51,16 @@ public class LecturerController {
     public R deleteLecturerById(Long lecturerId) {
         return lecturerService.deleteLecturerById(lecturerId);
     }
+
+    @Operation(summary = "Get all student by grade")
+    @GetMapping("/getAllStudentByLecturerId")
+    public R getStudentGradeById(Long lecturerId) {
+        return lecturerService.getStudentGrades(lecturerId);
+    }
+
+    @Operation(summary = "Get all courses with schedule")
+    @GetMapping("/getAllScheduleByLecturerId")
+    public R getScheduleCoursesById(Long lecturerId) {
+        return lecturerService.getScheduleByCourses(lecturerId);
+    }
 }

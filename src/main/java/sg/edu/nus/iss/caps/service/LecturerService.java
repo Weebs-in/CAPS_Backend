@@ -4,21 +4,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sg.edu.nus.iss.caps.common.R;
 import sg.edu.nus.iss.caps.common.RMessage;
-import sg.edu.nus.iss.caps.model.Faculty;
-import sg.edu.nus.iss.caps.model.Lecturer;
-import sg.edu.nus.iss.caps.repository.FacultyRepository;
-import sg.edu.nus.iss.caps.repository.LecturerRepository;
+import sg.edu.nus.iss.caps.model.*;
+import sg.edu.nus.iss.caps.repository.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
 public class LecturerService {
     private final LecturerRepository lecturerRepository;
     private final FacultyRepository facultyRepository;
+    private final CourseLecturerRepository courseLecturerRepository;
+    private final CourseStudentRepository courseStudentRepository;
+    private final CourseScheduleRepository courseScheduleRepository;
 
     @Autowired
-    public LecturerService(LecturerRepository lecturerRepository, FacultyRepository facultyRepository) {
+    public LecturerService(LecturerRepository lecturerRepository, FacultyRepository facultyRepository, CourseLecturerRepository courseLecturerRepository, CourseStudentRepository courseStudentRepository, CourseScheduleRepository courseScheduleRepository) {
         this.lecturerRepository = lecturerRepository;
         this.facultyRepository = facultyRepository;
+        this.courseLecturerRepository = courseLecturerRepository;
+        this.courseStudentRepository = courseStudentRepository;
+        this.courseScheduleRepository = courseScheduleRepository;
     }
 
     public R saveLecturer(Lecturer lecturer) {
@@ -64,5 +71,35 @@ public class LecturerService {
     public R deleteLecturerById(Long lecturerId) {
         lecturerRepository.deleteById(lecturerId);
         return R.ok(RMessage.DELETE_SUCCESS);
+    }
+
+    public R getStudentGrades(Long lecturerId) {
+        java.util.List<CourseLecturer> courseStudentList = courseLecturerRepository.getCourseLecturersByLecturerId(lecturerId);
+        List<CourseStudent> allStudentList = new ArrayList<>();
+
+        if (courseStudentList != null) {
+            for (CourseLecturer course : courseStudentList) {
+                List<CourseStudent> courseStudents = courseStudentRepository.getStudentByCid(course.getCourse().getCourseId());
+
+                allStudentList.addAll(courseStudents);
+
+            }
+        }
+        return R.ok(RMessage.RETRIEVE_SUCCESS).put("data", allStudentList);
+    }
+
+    public R getScheduleByCourses(Long lecturerId) {
+        java.util.List<CourseLecturer> courseStudentList = courseLecturerRepository.getCourseLecturersByLecturerId(lecturerId);
+        List<CourseSchedule> scheduleList = new ArrayList<>();
+
+        if (courseStudentList != null) {
+            for (CourseLecturer course : courseStudentList) {
+                List<CourseSchedule> courseStudents = courseScheduleRepository.getCourseByCid(course.getCourse().getCourseId());
+
+                scheduleList.addAll(courseStudents);
+
+            }
+        }
+        return R.ok(RMessage.RETRIEVE_SUCCESS).put("data", scheduleList);
     }
 }

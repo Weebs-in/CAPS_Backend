@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class AuthorizationInterceptor implements HandlerInterceptor {
+    @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
         HttpSession session = request.getSession();
 

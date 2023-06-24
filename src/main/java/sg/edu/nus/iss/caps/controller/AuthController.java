@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
-import sg.edu.nus.iss.caps.common.R;
 import sg.edu.nus.iss.caps.exceptions.ResourceNotFoundException;
 import sg.edu.nus.iss.caps.model.Admin;
 import sg.edu.nus.iss.caps.model.Lecturer;

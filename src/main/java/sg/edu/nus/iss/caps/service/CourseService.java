@@ -5,9 +5,13 @@ import org.springframework.stereotype.Service;
 import sg.edu.nus.iss.caps.common.R;
 import sg.edu.nus.iss.caps.common.RMessage;
 import sg.edu.nus.iss.caps.model.Course;
+import sg.edu.nus.iss.caps.model.CourseStudentDetails;
 import sg.edu.nus.iss.caps.model.Faculty;
 import sg.edu.nus.iss.caps.repository.CourseRepository;
 import sg.edu.nus.iss.caps.repository.FacultyRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author: Cooper Liu
@@ -77,12 +81,23 @@ public class CourseService {
         return 0;
     }
 
-    public int getCourseCapacityById(Long courseId){
+    public int getCourseCapacityById(Long courseId) {
 
         Course course = courseRepository.findById(courseId).orElse(null);
-        if(course != null){
+        if (course != null) {
             return course.getCourseCapacity();
         }
         return 0;
+    }
+
+    public R getStudentsByCourseId(Long courseId) {
+        List<Object[]> records_raw = courseRepository.findStudentsByCourseId(courseId);
+        List<CourseStudentDetails> records = new ArrayList<>();
+        for (Object[] o : records_raw) {
+            CourseStudentDetails newCSD = new CourseStudentDetails(courseId, (Long) o[0],
+                    (String) o[1], (String) o[2], (String) o[3], (String) o[4], (Double) o[5], (Double) o[6], (Integer) o[7]);
+            records.add(newCSD);
+        }
+        return R.ok(records);
     }
 }

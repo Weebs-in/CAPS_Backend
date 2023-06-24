@@ -31,6 +31,12 @@ public class CourseStudentController {
         return courseStudentService.studentEnrollCourse(studentId, courseId);
     }
 
+    @Operation(summary = "Get all courses a student ever enrolled")
+    @GetMapping("/getAllCoursesByStudentId")
+    public R getAllCoursesByStudentId(Long studentId) {
+        return courseStudentService.getAllCoursesByStudentId(studentId);
+    }
+
     @Operation(summary = "Remove and ban a student from a course")
     @PostMapping("/removeStudentFromCourse")
     public R removeStudentFromCourse(Long studentId, Long courseId) {

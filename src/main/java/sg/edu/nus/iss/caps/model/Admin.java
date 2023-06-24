@@ -1,5 +1,6 @@
 package sg.edu.nus.iss.caps.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class Admin {
     @Column(name = "admin_username", columnDefinition = "VARCHAR(20) NOT NULL UNIQUE")
     private String username;
 
+//    @JsonIgnore
     @Column(name = "admin_password", columnDefinition = "VARCHAR(60) NOT NULL")
     private String password;
 }

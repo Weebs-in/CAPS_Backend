@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import sg.edu.nus.iss.caps.model.Student;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @Author: Cooper Liu
@@ -16,4 +17,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query("SELECT s FROM Student s WHERE s.faculty.facultyId = :facultyId")
     List<Student> getStudentsByFacultyId(Long facultyId);
+
+    Optional<Student> getStudentByMatriculationNumber(String matricNum);
 }

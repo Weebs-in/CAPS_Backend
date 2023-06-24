@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sg.edu.nus.iss.caps.common.R;
 import sg.edu.nus.iss.caps.common.RMessage;
+import sg.edu.nus.iss.caps.exceptions.ResourceNotFoundException;
 import sg.edu.nus.iss.caps.model.Faculty;
 import sg.edu.nus.iss.caps.model.Lecturer;
 import sg.edu.nus.iss.caps.repository.FacultyRepository;
@@ -43,6 +44,11 @@ public class LecturerService {
     public R getLecturerById(Long lecturerId) {
         Lecturer lecturer = lecturerRepository.findById(lecturerId).orElse(null);
         return R.ok(RMessage.RETRIEVE_SUCCESS).put("data", lecturer);
+    }
+
+    public Lecturer getLecturerByMatriculationNumber(String matricNum){
+        return lecturerRepository.getLecturerByMatriculationNumber(matricNum)
+                .orElseThrow(() -> new ResourceNotFoundException("Lecturer NOT FOUND"));
     }
 
     public R updateLecturer(Lecturer lecturer) {

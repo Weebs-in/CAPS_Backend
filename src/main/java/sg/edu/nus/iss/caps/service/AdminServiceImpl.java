@@ -14,6 +14,6 @@ public class AdminServiceImpl implements AdminService{
     @Override
     public Admin getAdminByUsername(String username){
         return repoAdmin.getAdminByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("NOT FOUND"));
+                .orElseThrow(() -> new ResourceNotFoundException("Admin NOT FOUND"));
     }
 }

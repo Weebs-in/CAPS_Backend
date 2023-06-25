@@ -26,6 +26,11 @@ public class GlobalExceptionHandler {
         e.printStackTrace();
 
         // Generate response 'failed'
-        return R.error(e.getMessage());
+        if (e.getMessage().indexOf(':') == -1) {
+            return R.error(e.getMessage());
+        }
+        else {
+            return R.error(e.getMessage().substring(e.getMessage().indexOf(':') + 1));
+        }
     }
 }

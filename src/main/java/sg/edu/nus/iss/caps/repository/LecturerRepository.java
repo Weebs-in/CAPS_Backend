@@ -20,4 +20,7 @@ public interface LecturerRepository extends JpaRepository<Lecturer, Long> {
             "WHERE cl.lecturer.lecturerId = :lecturerId " +
             "AND cl.courseLecturerStatus = 0")
     List<Object[]> getStudentPerformanceByLecturerId(@Param("lecturerId") Long lecturerId);
+
+    @Query("SELECT l FROM Lecturer l WHERE l.matriculationNumber = :matriculationNumber")
+    Lecturer getLecturerByMatriculationNumber(String matriculationNumber);
 }

@@ -12,9 +12,8 @@ public class CalculateGpaByGrade {
         double fullGrade = 100.0;
         double fullGp = 5.0;
         double gradeToGpScale = fullGp / fullGrade;
-        double numericGrade = grade;
-        if (!Double.isNaN(numericGrade)) {
-            return Math.round(numericGrade * gradeToGpScale * 100.0) / 100.0;
+        if (!Double.isNaN(grade)) {
+            return Math.round(grade * gradeToGpScale * 100.0) / 100.0;
         } else {
             return 0.0;
         }

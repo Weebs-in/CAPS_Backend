@@ -31,7 +31,7 @@ public class CourseLecturerController {
     }
 
     @Operation(summary = "Lecturer enroll a course")
-    @PostMapping("/LecturerEnrollCourse")
+    @PostMapping("/lecturerEnrollCourse")
     public R lecturerEnrollCourse(Long courseId, Long lecturerId) {
         return courseLecturerService.lecturerEnrollCourse(courseId, lecturerId);
     }
@@ -53,6 +53,12 @@ public class CourseLecturerController {
     @GetMapping("/getCoursesByLecturerId")
     public R getCoursesByLecturerId(Long lecturerId) {
         return courseLecturerService.getCoursesByLecturerId(lecturerId);
+    }
+
+    @Operation(summary = "Get all course a lecturer can enroll")
+    @GetMapping("/getEnrollCoursesByLecturerId")
+    public R getEnrollCoursesByLecturerId(Long lecturerId) {
+        return courseLecturerService.getEnrollCoursesByLecturerId(lecturerId);
     }
 
     @Operation(summary = "Grade a student for a course, note that this includes changing their gpa")

@@ -3,6 +3,7 @@ package sg.edu.nus.iss.caps.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import sg.edu.nus.iss.caps.model.Course;
 import sg.edu.nus.iss.caps.model.CourseLecturer;
 import sg.edu.nus.iss.caps.model.Lecturer;
 
@@ -22,4 +23,12 @@ public interface CourseLecturerRepository extends JpaRepository<CourseLecturer, 
             "ON l.lecturerId = cl.lecturer.lecturerId " +
             "WHERE cl.course.courseId = :courseId")
     List<Lecturer> getLecturersByCourseId(@Param("courseId") Long courseId);
+
+    @Query("SELECT c FROM Course c WHERE c.faculty.facultyId = " +
+            "(SELECT l.faculty.facultyId FROM Lecturer l WHERE l.lecturerId = :lecturerId)" +
+            " AND c.courseId NOT IN " +
+            "(SELECT cl.course.courseId FROM CourseLecturer cl WHERE cl.lecturer.lecturerId = :lecturerId" +
+            " AND cl.courseLecturerStatus = 0) " +
+            "AND c.courseStatus <> 2")
+    List<Course> getEnrollCoursesByLecturerId(@Param("lecturerId") Long lecturerId);
 }

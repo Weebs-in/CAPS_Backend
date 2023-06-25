@@ -232,6 +232,9 @@ public class CourseStudentService {
 
         // Iterate over the course records
         for (CourseStudent courseStudent : courseRecords) {
+            if (courseStudent.getCourseStudentGrade() == null) {
+                continue;
+            }
             Course course = courseStudent.getCourse();
             double grade = courseStudent.getCourseStudentGrade();
 

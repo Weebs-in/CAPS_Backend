@@ -71,4 +71,14 @@ public class StudentService {
         studentRepository.deleteById(studentId);
         return R.ok(RMessage.DELETE_SUCCESS);
     }
+
+    public R updateGpaById(Long studentId, Double gpa) {
+        Student student = studentRepository.findById(studentId).orElse(null);
+        if (student == null) {
+            return R.error(RMessage.RETRIEVE_FAILED);
+        }
+        student.setGpa(gpa);
+        studentRepository.save(student);
+        return R.ok(RMessage.UPDATE_SUCCESS);
+    }
 }

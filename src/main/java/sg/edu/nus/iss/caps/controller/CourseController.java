@@ -76,4 +76,10 @@ public class CourseController {
     public R getStudentsByCourseId(Long courseId) {
         return courseService.getStudentsByCourseId(courseId);
     }
+
+    @Operation(summary = "Get course schedule and lecturers by id")
+    @GetMapping("/getCourseLecturerSchedule")
+    public R getCourseLecturerSchedule(Long courseId) {
+        return courseService.getCourseLecturerSchedule(courseId);
+    }
 }

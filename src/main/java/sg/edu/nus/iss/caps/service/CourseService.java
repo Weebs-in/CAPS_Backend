@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sg.edu.nus.iss.caps.common.R;
 import sg.edu.nus.iss.caps.common.RMessage;
-import sg.edu.nus.iss.caps.model.Course;
-import sg.edu.nus.iss.caps.model.CourseStudentDetails;
-import sg.edu.nus.iss.caps.model.Faculty;
+import sg.edu.nus.iss.caps.model.*;
+import sg.edu.nus.iss.caps.repository.CourseLecturerRepository;
 import sg.edu.nus.iss.caps.repository.CourseRepository;
+import sg.edu.nus.iss.caps.repository.CourseScheduleRepository;
 import sg.edu.nus.iss.caps.repository.FacultyRepository;
 
 import java.util.ArrayList;
@@ -25,11 +25,18 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final FacultyRepository facultyRepository;
+    private final CourseLecturerRepository courseLecturerRepository;
+    private final CourseScheduleRepository courseScheduleRepository;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository, FacultyRepository facultyRepository) {
+    public CourseService(CourseRepository courseRepository,
+                         FacultyRepository facultyRepository,
+                         CourseLecturerRepository courseLecturerRepository,
+                         CourseScheduleRepository courseScheduleRepository) {
         this.courseRepository = courseRepository;
         this.facultyRepository = facultyRepository;
+        this.courseLecturerRepository = courseLecturerRepository;
+        this.courseScheduleRepository = courseScheduleRepository;
     }
 
     public R saveCourse(Course course) {
@@ -99,5 +106,16 @@ public class CourseService {
             records.add(newCSD);
         }
         return R.ok(records);
+    }
+
+    public R getCourseLecturerSchedule(Long courseId) {
+        // set schedules
+        CourseLecturerSchedule courseLecturerSchedule = new CourseLecturerSchedule();
+        List<Schedule> schedule_records = courseScheduleRepository.getSchedulesByCourseId(courseId);
+        courseLecturerSchedule.setSchedules(schedule_records);
+        // set lecturers
+        List<Lecturer> lecturer_records = courseLecturerRepository.getLecturersByCourseId(courseId);
+        courseLecturerSchedule.setLecturers(lecturer_records);
+        return R.ok(courseLecturerSchedule);
     }
 }

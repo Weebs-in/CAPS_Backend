@@ -48,9 +48,6 @@ public class CourseLecturerService {
         if (lecturer == null) {
             return R.error(RMessage.RETRIEVE_FAILED + ":Lecturer not found ");
         }
-        if (course.getCourseEnrollmentStatus() == C_COURSE_NOT_ENROLLING) {
-            return R.error(RMessage.CREATE_FAILED + ": Course not enrolling");
-        }
         if (!course.getFaculty().getFacultyId().equals(lecturer.getFaculty().getFacultyId())) {
             return R.error(RMessage.CREATE_FAILED + ": Course doesn't belongs to this lecturer");
         }
@@ -62,7 +59,16 @@ public class CourseLecturerService {
             courseLecturerRepository.save(newRecord);
             return R.ok(RMessage.CREATE_SUCCESS + ": Enroll successful");
         }
-        return R.error(RMessage.CREATE_FAILED + ": Already enrolled");
+        else {
+            CourseLecturer oldRecord = courseLecturers.get(0);
+            // lecturer was removed, so he can enroll again
+            if (oldRecord.getCourseLecturerStatus() == CSC_LECTURER_REMOVED) {
+                oldRecord.setCourseLecturerStatus(CSC_LECTURER_ENROLLED);
+                courseLecturerRepository.save(oldRecord);
+                return R.ok(RMessage.CREATE_SUCCESS + ": Re-enroll successful");
+            }
+        }
+        return R.error(RMessage.CREATE_FAILED);
     }
 
     /**
@@ -156,5 +162,10 @@ public class CourseLecturerService {
         courseStudent.setCourseStudentStatus(courseStudentStatus);
         courseStudentRepository.save(courseStudent);
         return R.ok(RMessage.UPDATE_SUCCESS);
+    }
+
+    public R getEnrollCoursesByLecturerId(Long lecturerId) {
+        List<Course> courses = courseLecturerRepository.getEnrollCoursesByLecturerId(lecturerId);
+        return R.ok(courses);
     }
 }

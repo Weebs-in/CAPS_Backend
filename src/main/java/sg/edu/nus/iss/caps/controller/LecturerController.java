@@ -3,10 +3,12 @@ package sg.edu.nus.iss.caps.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import sg.edu.nus.iss.caps.common.R;
 import sg.edu.nus.iss.caps.model.Lecturer;
 import sg.edu.nus.iss.caps.service.LecturerService;
+import sg.edu.nus.iss.caps.util.EncryptPassword;
 
 @Tag(name = "Lecturer API")
 @RestController
@@ -17,6 +19,7 @@ public class LecturerController {
     private LecturerService lecturerService;
 
     @Operation(summary = "Get all lecturers")
+    @PreAuthorize("hasAuthority('sys:admin')")
     @GetMapping("/getAllLecturers")
     public R getAllLecturers() {
         return lecturerService.getAllLecturers();
@@ -34,18 +37,23 @@ public class LecturerController {
         return lecturerService.getLecturersByFacultyId(facultyId);
     }
 
+    @PreAuthorize("hasAuthority('sys:admin')")
     @Operation(summary = "Save a new lecturer")
     @PostMapping("/saveLecturer")
     public R saveLecturer(@RequestBody Lecturer lecturer) {
+        lecturer.setPassword(EncryptPassword.EncodePassword(lecturer.getPassword()));
         return lecturerService.saveLecturer(lecturer);
     }
 
+    @PreAuthorize("hasAuthority('sys:admin')")
     @Operation(summary = "Update a lecturer")
     @PutMapping("/updateLecturer")
     public R updateLecturer(@RequestBody Lecturer lecturer) {
+        lecturer.setPassword(EncryptPassword.EncodePassword(lecturer.getPassword()));
         return lecturerService.updateLecturer(lecturer);
     }
 
+    @PreAuthorize("hasAuthority('sys:admin')")
     @Operation(summary = "Delete a lecturer by id")
     @DeleteMapping("/deleteLecturerById")
     public R deleteLecturerById(Long lecturerId) {

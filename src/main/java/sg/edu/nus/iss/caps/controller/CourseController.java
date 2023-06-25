@@ -3,6 +3,7 @@ package sg.edu.nus.iss.caps.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import sg.edu.nus.iss.caps.common.R;
 import sg.edu.nus.iss.caps.model.Course;
@@ -23,6 +24,7 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
+    @PreAuthorize("hasAuthority('sys:admin')")
     @Operation(summary = "Get all courses")
     @GetMapping("/getAllCourses")
     public R getAllCourses() {
@@ -41,18 +43,21 @@ public class CourseController {
         return courseService.getCoursesByFacultyId(facultyId);
     }
 
+    @PreAuthorize("hasAuthority('sys:admin')")
     @Operation(summary = "Save a new course")
     @PostMapping("/saveCourse")
     public R saveCourse(@RequestBody Course course) {
         return courseService.saveCourse(course);
     }
 
+    @PreAuthorize("hasAuthority('sys:admin')")
     @Operation(summary = "Update a course")
     @PutMapping("/updateCourse")
     public R updateCourse(@RequestBody Course course) {
         return courseService.updateCourse(course);
     }
 
+    @PreAuthorize("hasAuthority('sys:admin')")
     @Operation(summary = "Delete a course by id")
     @DeleteMapping("/deleteCourseById")
     public R deleteCourseById(Long courseId) {

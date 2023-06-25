@@ -33,4 +33,10 @@ public interface CourseStudentRepository extends JpaRepository<CourseStudent, Lo
     @Query("SELECT cs FROM CourseStudent cs WHERE cs.student.studentId = :studentId AND (cs.course.courseStatus = :enrolledStatus OR cs.course.courseStatus = :completedStatus)")
     List<CourseStudent> getCourseBySidAndECStatus(@Param("studentId") Long studentId, @Param("enrolledStatus") int enrolledStatus, @Param("completedStatus") int completedStatus);
 
+    @Query("SELECT c.courseId, s.studentId, c.courseName, s.firstMidName, s.lastName, cs.courseStudentStatus" +
+            " FROM CourseStudent cs " +
+            "JOIN cs.course c ON c.courseId = cs.course.courseId " +
+            "JOIN cs.student s ON s.studentId = cs.student.studentId " +
+            "WHERE (cs.courseStudentStatus = 0 OR cs.courseStudentStatus = 1)")
+    List<Object[]> getAllStudentOngoingCourseList();
 }

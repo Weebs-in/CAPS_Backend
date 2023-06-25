@@ -3,6 +3,7 @@ package sg.edu.nus.iss.caps.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import sg.edu.nus.iss.caps.common.R;
 import sg.edu.nus.iss.caps.service.FacultyService;
@@ -46,6 +47,7 @@ public class FacultyController {
         return facultyService.updateFaculty(facultyId, newFacultyName);
     }
 
+    @PreAuthorize("hasAuthority('sys:admin')")
     @Operation(summary = "Delete a Faculty by id")
     @DeleteMapping("/deleteFacultyById")
     public R deleteFacultyById(Long facultyId) {

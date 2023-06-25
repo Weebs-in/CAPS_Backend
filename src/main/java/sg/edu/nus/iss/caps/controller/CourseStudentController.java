@@ -66,4 +66,9 @@ public class CourseStudentController {
     public R updateStudentEnrollmentStatus(Long studentId, Long courseId, int enrollmentStatus){
         return courseStudentService.updateStudentEnrollmentStatus(studentId, courseId, enrollmentStatus);
     }
+
+    @GetMapping ("/getAllStudentOngoingCourseList")
+    public R getAllStudentOngoingCourseList() {
+        return courseStudentService.getAllStudentOngoingCourseList();
+    }
 }

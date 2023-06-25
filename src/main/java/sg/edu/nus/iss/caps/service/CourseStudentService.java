@@ -289,4 +289,15 @@ public class CourseStudentService {
     }
 
 
+    public R getAllStudentOngoingCourseList() {
+        List<Object[]> details = courseStudentRepository.getAllStudentOngoingCourseList();
+        List<CourseStudentDetails> records = new ArrayList<>();
+        for (Object[] o : details) {
+            CourseStudentDetails newSCR = new CourseStudentDetails(
+                    (Long) o[0], (Long) o[1], (String) o[2], (String) o[4], (String) o[3],
+                    "-", 0.0, 0.0, (Integer) o[5]);
+            records.add(newSCR);
+        }
+        return R.ok(records);
+    }
 }

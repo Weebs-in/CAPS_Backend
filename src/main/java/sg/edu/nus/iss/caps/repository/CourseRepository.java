@@ -20,9 +20,21 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     List<Course> getCoursesByFacultyId(Long facultyId);
 
     @Query("SELECT c.courseVacancy FROM Course c WHERE c.courseId = :courseId")
-    int getCourseVacancyById(@Param("courseId")Long courseId);
+    int getCourseVacancyById(@Param("courseId") Long courseId);
 
     @Query("SELECT c.courseCapacity FROM Course c WHERE c.courseId = :courseId")
-    int getCourseCapacityById(@Param("courseId")Long courseId);
+    int getCourseCapacityById(@Param("courseId") Long courseId);
 
+    @Query("SELECT c FROM Course c " +
+            "INNER JOIN CourseLecturer cl " +
+            "ON c.courseId = cl.course.courseId " +
+            "WHERE cl.lecturer.lecturerId = :lecturerId " +
+            "AND cl.courseLecturerStatus = 0")
+    List<Course> getCourseByLecturerId(@Param("lecturerId") Long lecturerId);
+
+    @Query("SELECT s.studentId, c.courseName, s.lastName, s.firstMidName, s.gender, s.gpa, cs.courseStudentGrade, cs.courseStudentStatus FROM CourseStudent cs " +
+            "JOIN cs.student s " +
+            "JOIN cs.course c " +
+            "WHERE c.courseId = :courseId")
+    List<Object[]> findStudentsByCourseId(@Param("courseId") Long courseId);
 }

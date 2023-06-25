@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,5 +36,17 @@ public class CourseLecturerController {
     @PostMapping("/inputScoreForTheCourse")
     public R inputScoreForIndividualStudentForTheCourseTaughtByTheLecturer(Long courseId, Long lecturerId, Long studentId, Double courseGrade) {
         return courseLecturerService.inputScoreForIndividualStudentForTheCourseTaughtByTheLecturer(courseId, lecturerId, studentId, courseGrade);
+    }
+
+    @Operation(summary = "Get all course a lecturer teach")
+    @GetMapping("/getCoursesByLecturerId")
+    public R getCoursesByLecturerId(Long lecturerId) {
+        return courseLecturerService.getCoursesByLecturerId(lecturerId);
+    }
+
+    @Operation(summary = "Grade a student for a course")
+    @PostMapping("/gradeStudentForCourse")
+    public R gradeStudentForCourse(Long courseId, Long lecturerId, Long studentId, Double courseStudentGrade, Integer courseStudentStatus) {
+        return courseLecturerService.gradeStudentForCourse(courseId, lecturerId, studentId, courseStudentGrade, courseStudentStatus);
     }
 }

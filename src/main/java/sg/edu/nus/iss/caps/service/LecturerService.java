@@ -102,4 +102,16 @@ public class LecturerService {
         }
         return R.ok(RMessage.RETRIEVE_SUCCESS).put("data", scheduleList);
     }
+
+
+    public R getStudentPerformanceByLecturerId(Long lecturerId) {
+        List<Object[]> records_raw = lecturerRepository.getStudentPerformanceByLecturerId(lecturerId);
+        List<LecturerStudentDetails> records = new ArrayList<>();
+        for (Object[] o : records_raw) {
+            LecturerStudentDetails newLSD = new LecturerStudentDetails((Long) o[0],
+                    (String) o[1], (String) o[2], (String) o[3], (String) o[4], (Double) o[5], (Double) o[6], (Integer) o[7], (Long) o[8], (String) o[9], (Integer) o[10]);
+            records.add(newLSD);
+        }
+        return R.ok(records);
+    }
 }

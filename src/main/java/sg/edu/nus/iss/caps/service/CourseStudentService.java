@@ -61,7 +61,7 @@ public class CourseStudentService {
         if (course == null) {
             return R.error(RMessage.CREATE_FAILED + ": Course not found");
         }
-        if (course.getCourseEnrollmentStatus() == CSC_COURSE_NOT_ENROLLING) {
+        if (course.getCourseEnrollmentStatus() == C_COURSE_NOT_ENROLLING) {
             return R.error(RMessage.CREATE_FAILED + ": Course not enrolling");
         }
         if (!course.getFaculty().getFacultyId().equals(student.getFaculty().getFacultyId())) {
@@ -89,6 +89,22 @@ public class CourseStudentService {
         }
         // if record already exists, do nothing
         return R.error(RMessage.CREATE_FAILED + ": Already enrolled");
+    }
+
+    /**
+     * Get all courses a student ever enrolled/completed/banned
+     *
+     * @param studentId Specify the student id
+     * @return R
+     */
+    public R getAllCoursesByStudentId(Long studentId) {
+        List<Object[]> records_raw = courseStudentRepository.findCoursesByStudentId(studentId);
+        List<StudentCourseRecords> records = new ArrayList<>();
+        for (Object[] o : records_raw) {
+            StudentCourseRecords newSCR = new StudentCourseRecords((Long) o[0], (String) o[1], (Double) o[2], (Integer) o[3]);
+            records.add(newSCR);
+        }
+        return R.ok(RMessage.RETRIEVE_SUCCESS).put("data", records);
     }
 
     /**
@@ -173,13 +189,25 @@ public class CourseStudentService {
 
         //Filter out completed courses
         List<CourseStudent> completedCourses = courseStudentRepository.getCourseBySidAndStatus(studentId, CSC_STUDENT_COMPLETED);
+        List<CourseStudent> enrolledCourses = courseStudentRepository.getCourseBySidAndStatus(studentId, CSC_STUDENT_ENROLLED);
+        List<CourseStudent> inProgressCourses = courseStudentRepository.getCourseBySidAndStatus(studentId, CSC_COURSE_IN_PROGRESS);
         Set<Long> completedCourseIds = completedCourses.stream()
+                .map(courseStudent -> courseStudent.getCourse().getCourseId())
+                .collect(Collectors.toSet());
+        Set<Long> enrolledCourseIds = enrolledCourses.stream()
+                .map(courseStudent -> courseStudent.getCourse().getCourseId())
+                .collect(Collectors.toSet());
+        Set<Long> inProgressCourseIds = inProgressCourses.stream()
                 .map(courseStudent -> courseStudent.getCourse().getCourseId())
                 .collect(Collectors.toSet());
 
         //Filter out courses with a different faculty or a vacancy of 0
         Set<Course> availableCourses = allCourses.stream()
                 .filter(course -> !completedCourseIds.contains(course.getCourseId())) //Exclude completed courses
+                .filter(course -> !enrolledCourseIds.contains(course.getCourseId())) //Exclude enrolled courses
+                .filter(course -> !inProgressCourseIds.contains(course.getCourseId())) //Exclude in progress courses
+                .filter(course -> course.getCourseStatus() != C_COURSE_COMPLETED) //Exclude completed courses
+                .filter(course -> course.getCourseEnrollmentStatus() == C_COURSE_ENROLLING) //Exclude not enrolling courses
                 .filter(course -> course.getFaculty().equals(faculty)) //Filter by faculty
                 .filter(course -> course.getCourseVacancy() > 0) // Filter by vacancy
                 .collect(Collectors.toSet());
@@ -203,7 +231,7 @@ public class CourseStudentService {
         int totalCredits = 0;
 
         // Iterate over the course records
-        for(CourseStudent courseStudent : courseRecords){
+        for (CourseStudent courseStudent : courseRecords) {
             Course course = courseStudent.getCourse();
             double grade = courseStudent.getCourseStudentGrade();
 
@@ -214,7 +242,7 @@ public class CourseStudentService {
             courseInfo.put("grade", grade);
 
             // Calculate the grade points and credits
-            if(grade >= 0){
+            if (grade >= 0) {
                 double gradePoints = grade * course.getCourseCredits();
                 totalGradePoints += gradePoints;
                 totalCredits += course.getCourseCredits();
@@ -233,7 +261,7 @@ public class CourseStudentService {
         return R.ok(result);
     }
 
-    public R updateStudentEnrollmentStatus(Long studentId, Long courseId, int enrollmentStatus){
+    public R updateStudentEnrollmentStatus(Long studentId, Long courseId, int enrollmentStatus) {
         // check student
         Student student = studentRepository.findById(studentId).orElse(null);
         if (student == null) {
@@ -249,7 +277,7 @@ public class CourseStudentService {
         CourseStudent courseStudent = courseStudentRepository.getCourseByCidAndSid(courseId, studentId).stream()
                 .findFirst()
                 .orElse(null);
-        if(courseStudent == null){
+        if (courseStudent == null) {
             return R.error(RMessage.UPDATE_FAILED + ": Student is not enrolled in the course");
         }
 
@@ -259,4 +287,6 @@ public class CourseStudentService {
 
         return R.ok(RMessage.UPDATE_SUCCESS + ": Enrollment status updated successfully");
     }
+
+
 }

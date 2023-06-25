@@ -48,7 +48,7 @@ public class CourseLecturerService {
         if (lecturer == null) {
             return R.error(RMessage.RETRIEVE_FAILED + ":Lecturer not found ");
         }
-        if (course.getCourseEnrollmentStatus() == CSC_COURSE_NOT_ENROLLING) {
+        if (course.getCourseEnrollmentStatus() == C_COURSE_NOT_ENROLLING) {
             return R.error(RMessage.CREATE_FAILED + ": Course not enrolling");
         }
         if (!course.getFaculty().getFacultyId().equals(lecturer.getFaculty().getFacultyId())) {
@@ -83,7 +83,7 @@ public class CourseLecturerService {
             return R.error(RMessage.RETRIEVE_FAILED + ":Lecturer not found ");
         }
         CourseLecturer clRecord = courseLecturerRepository.getCourseByCidAndLid(courseId, lecturerId).get(0);
-        clRecord.setCourseLecturerStatus(CSC_LECTURER_NOT_ENROLLING);
+        clRecord.setCourseLecturerStatus(CSC_LECTURER_REMOVED);
         courseLecturerRepository.save(clRecord);
         return R.ok(RMessage.CREATE_SUCCESS + ": Remove successful");
     }
@@ -139,5 +139,22 @@ public class CourseLecturerService {
         courseStudentRepository.save(courseStudent);
 
         return R.ok(RMessage.UPDATE_SUCCESS + "updating student marks for the course taught by this lecturer is ok");
+    }
+
+    public R getCoursesByLecturerId(Long lecturerId) {
+        List<Course> courses = courseRepository.getCourseByLecturerId(lecturerId);
+        return R.ok(courses);
+    }
+
+    public R gradeStudentForCourse(Long courseId, Long lecturerId, Long studentId, Double courseStudentGrade, Integer courseStudentStatus) {
+        List<CourseLecturer> courseLecturers = courseLecturerRepository.getCourseByCidAndLid(courseId, lecturerId);
+        if (courseLecturers.isEmpty() || courseLecturers.get(0).getCourseLecturerStatus() == CSC_LECTURER_REMOVED) {
+            return R.error(RMessage.UPDATE_FAILED + "You are not a valid teacher for this course");
+        }
+        CourseStudent courseStudent = courseStudentRepository.getCourseByCidAndSid(courseId, studentId).get(0);
+        courseStudent.setCourseStudentGrade(courseStudentGrade);
+        courseStudent.setCourseStudentStatus(courseStudentStatus);
+        courseStudentRepository.save(courseStudent);
+        return R.ok(RMessage.UPDATE_SUCCESS);
     }
 }

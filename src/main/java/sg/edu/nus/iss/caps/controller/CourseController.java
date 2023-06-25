@@ -70,4 +70,10 @@ public class CourseController {
     public int getCourseCapacityById(Long courseId) {
         return courseService.getCourseCapacityById(courseId);
     }
+
+    @Operation(summary = "Get students from a course by id")
+    @GetMapping("/getStudentsByCourseId")
+    public R getStudentsByCourseId(Long courseId) {
+        return courseService.getStudentsByCourseId(courseId);
+    }
 }

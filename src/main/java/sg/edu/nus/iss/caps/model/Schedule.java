@@ -2,10 +2,11 @@ package sg.edu.nus.iss.caps.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 import sg.edu.nus.iss.caps.listener.ScheduleListener;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @Entity
@@ -21,10 +22,12 @@ public class Schedule {
     private int scheduleDayOfWeek;
 
     @Column(name = "schedule_start_time")
-    private LocalDate scheduleStartTime;
+    @DateTimeFormat(pattern = "HH:mm:ss")
+    private LocalTime scheduleStartTime;
 
     @Column(name = "schedule_end_time")
-    private LocalDate scheduleEndTime;
+    @DateTimeFormat(pattern = "HH:mm:ss")
+    private LocalTime scheduleEndTime;
 
     @Column(name = "gmt_create", updatable = false)
     private LocalDateTime gmtCreate;

@@ -2,6 +2,7 @@ package sg.edu.nus.iss.caps.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,7 +28,18 @@ public class AuthController {
 
     @Operation(summary = "Login")
     @PostMapping("/login")
-    public R login(@RequestBody LoginUser loginUser) {
-        return authService.attemptLogin(loginUser.getUsername(), loginUser.getPassword());
+    public R login(HttpSession session, @RequestBody LoginUser loginUser) {
+        // 进行登录验证逻辑
+        R response = authService.attemptLogin(loginUser.getUsername(), loginUser.getPassword());
+
+        // 如果登录成功，将用户信息保存到会话中
+        if (response.isOk()) {
+            session.setAttribute("user", loginUser.getUsername());
+        }
+
+        return response;
     }
+
 }
+
+

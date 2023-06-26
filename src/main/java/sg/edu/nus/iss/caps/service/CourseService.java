@@ -1,6 +1,8 @@
 package sg.edu.nus.iss.caps.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import sg.edu.nus.iss.caps.common.R;
 import sg.edu.nus.iss.caps.common.RMessage;
@@ -10,6 +12,7 @@ import sg.edu.nus.iss.caps.repository.CourseRepository;
 import sg.edu.nus.iss.caps.repository.CourseScheduleRepository;
 import sg.edu.nus.iss.caps.repository.FacultyRepository;
 
+import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,4 +121,12 @@ public class CourseService {
         courseLecturerSchedule.setLecturers(lecturer_records);
         return R.ok(courseLecturerSchedule);
     }
+
+
+
+    public Page<Course> getAllCourses(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return courseRepository.findAll(pageable);
+    }
+
 }

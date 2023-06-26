@@ -3,11 +3,14 @@ package sg.edu.nus.iss.caps.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import sg.edu.nus.iss.caps.common.R;
 import sg.edu.nus.iss.caps.model.Course;
 import sg.edu.nus.iss.caps.service.CourseService;
+
+
 
 /**
  * @Author: Cooper Liu
@@ -30,6 +33,7 @@ public class CourseController {
     public R getAllCourses() {
         return courseService.getAllCourses();
     }
+
 
     @Operation(summary = "Get course by id")
     @GetMapping("/getCourseById")
@@ -87,4 +91,6 @@ public class CourseController {
     public R getCourseLecturerSchedule(Long courseId) {
         return courseService.getCourseLecturerSchedule(courseId);
     }
+
+
 }

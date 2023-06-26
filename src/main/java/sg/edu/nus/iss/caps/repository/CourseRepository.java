@@ -37,4 +37,5 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
             "JOIN cs.course c " +
             "WHERE c.courseId = :courseId")
     List<Object[]> findStudentsByCourseId(@Param("courseId") Long courseId);
+
 }
